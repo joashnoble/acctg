@@ -1,0 +1,36 @@
+### LATEST
+ALTER TABLE `web_jenra_billing`.`b_contract_info` 
+ADD COLUMN `schedule_type` INT(2) NULL DEFAULT 0 AFTER `contract_signatory`;
+
+ALTER TABLE `web_jenra_billing`.`b_billing_info` 
+ADD COLUMN `electric_wtax_amount` DECIMAL(15,5) NULL DEFAULT '0.00000' AFTER `wtax_percent`,
+ADD COLUMN `electric_wtax_percent` DECIMAL(15,5) NULL DEFAULT '0.00000' AFTER `electric_wtax_amount`;
+
+ALTER TABLE `web_jenra_billing`.`b_company_settings` 
+ADD COLUMN `electric_charge_id` INT(11) NULL DEFAULT '0' AFTER `payment_advances_account_id`;
+
+ALTER TABLE `web_jenra_billing`.`b_tenants` 
+ADD COLUMN `is_withhold_electricity` TINYINT(1) NULL DEFAULT '0' AFTER `is_auto`;
+
+ALTER TABLE `web_jenra_billing`.`b_refdepartments` 
+ADD COLUMN `signatory_1` VARCHAR(255) NULL AFTER `department_desc`,
+ADD COLUMN `signatory_1_position` VARCHAR(255) NULL AFTER `signatory_1`,
+ADD COLUMN `signatory_2` VARCHAR(255) NULL AFTER `signatory_1_position`,
+ADD COLUMN `signatory_2_position` VARCHAR(255) NULL AFTER `signatory_2`,
+ADD COLUMN `signatory_3` VARCHAR(255) NULL AFTER `signatory_2_position`,
+ADD COLUMN `signatory_3_position` VARCHAR(255) NULL AFTER `signatory_3`;
+// LAST UPDATE
+ALTER TABLE `web_jenra_billing_v2`.`b_refdepartments` 
+ADD COLUMN `start_day` INT(11) NULL DEFAULT '0' AFTER `signatory_3_position`,
+ADD COLUMN `end_day` INT(11) NULL DEFAULT '0' AFTER `start_day`,
+ADD COLUMN `cut_off_day` INT(11) NULL DEFAULT '0' AFTER `end_day`;
+
+
+
+ALTER TABLE `web_jenra_billing_v2`.`b_tenants` 
+ADD COLUMN `billing_notes` VARCHAR(1500) NULL DEFAULT '<ul>
+ 	<li>Presentation of this statement is sufficient notice that the account is due.</li>
+ 	<li>Please make all checks payable to TAN SONG BOK REALTY AND DEVELOPMENT CORPORATION.</li>
+ 	<li>Payments can also be made thru RCBC ACCOUNT # 0332-805-037.</li>
+ 	<li>3% penalty would be charge for payments received after the 7th day of the month.</li>
+ </ul>' AFTER `is_deleted`;
