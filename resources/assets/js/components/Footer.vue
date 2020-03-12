@@ -1,6 +1,6 @@
 <template>
   <footer class="app-footer">
-    <a href="#">JDEV</a> &copy; 2018.
+    JDEV OFFICE SOLUTION INC. &copy; 2020.
   </footer>
 </template>
 <script>

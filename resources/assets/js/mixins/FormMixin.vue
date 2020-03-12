@@ -38,7 +38,7 @@
                 // this.forms[entity].states[key] = false
                 // this.forms[entity].errors[key] =  errors[key]
                 if(a == 0){
-                  this.focusElement(key, is_tab)
+                  // this.focusElement(key, is_tab)
                   this.$notify({
                     type: 'error',
                     group: 'notification',
@@ -70,7 +70,7 @@
             })
             console.log(this.tables[entity_table])
             this.tables[entity_table].items.unshift(response.data.data)
-            this.paginations[entity_table].totalRows++
+            // this.paginations[entity_table].totalRows++
 
             if(isModal){
               this.$refs[refs].showModalEntry = false
@@ -599,7 +599,65 @@
         capitalize (s){
           if (typeof s !== 'string') return ''
             return s.charAt(0).toUpperCase() + s.slice(1)
-        }
+        },
+        CancelJournalEntry (entity, entity_id, isModal, row, refs, is_tab = false) {
+          this.$refs[refs].isSaving = true
+          this.$http.put('api/canceljournal/' + row.journal_id , row.journal_id, {
+              headers: {
+                      Authorization: 'Bearer ' + localStorage.getItem('token')
+                  }
+            })
+            .then((response) => {
+              this.$refs[refs].isSaving = false
+              var type = '';
+              if(response.data.data.is_active == 1){ type = 'Uncancelled';} else { type='Cancelled';}
+              this.$parent.$notify({
+                type: 'success',
+                group: 'notification',
+                title: 'Success!',
+                text: 'The Journal has been '+type+' successfully.'
+              })
+              for (var key in response.data.data) {
+                row[key] = response.data.data[key]
+              }
+
+              if(isModal){
+                this.$refs[refs].showModalCancel = false
+              }
+              
+            }).catch(error => {
+               this.$refs[refs].isSaving = false
+              if (!error.response) return
+              const errors = error.response.data.errors
+              var a = 0
+              for (var key in errors) {
+                if(a == 0){
+                  this.$refs[refs].focusElement(key, is_tab)
+                  this.$notify({
+                    type: 'error',
+                    group: 'notification',
+                    title: 'Error!',
+                    text: errors[key][0]
+                  })
+                }
+                  
+                a++
+              }
+            })
+        },
+        async checkPeriod (checkDate) {
+          let is_used = false
+          await this.$http.post('api/accountingperiodcheck',  checkDate,{
+              headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            .then((response) => {
+              is_used = response.data
+            })
+            .catch(error => {
+              if (!error.response) return
+              console.log(error)
+            })
+          return is_used
+        },
       },
     }
 </script>

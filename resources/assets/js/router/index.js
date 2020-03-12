@@ -13,7 +13,27 @@ import Login from '@/views/pages/Login'
 import Logout from '@/views/pages/Logout'
 import Register from '@/views/pages/Register'
 
+// REFERENCES
 import categories from '@/views/references/Categories'
+import departments from '@/views/references/Departments'
+import units from '@/views/references/Units'
+import locations from '@/views/references/Locations'
+import brands from '@/views/references/Brands'
+import banks from '@/views/references/Banks'
+import accountclasses from '@/views/references/AccountClasses'
+import accounttitles from '@/views/references/AccountTitles'
+
+// MASTERFILES
+import products from '@/views/masterfiles/Products'
+import suppliers from '@/views/masterfiles/Suppliers'
+import customers from '@/views/masterfiles/Customers'
+import salespersons from '@/views/masterfiles/Salespersons'
+
+
+import generalconfiguration from '@/views/settings/GeneralConfiguration'
+import generaljournal from '@/views/financing/GeneralJournals'
+
+
 import store from '../store'
 Vue.use(Router)
 
@@ -47,8 +67,114 @@ const router = new Router({
               component: categories,
               // meta: {requiresAuth: true, rights: '4-13'}
             },
+            {
+              path: 'departments',
+              name: 'Departments',
+              component: departments,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'units',
+              name: 'Units',
+              component: units,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'locations',
+              name: 'Locations',
+              component: locations,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+
+            {
+              path: 'brands',
+              name: 'Brands',
+              component: brands,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'banks',
+              name: 'Banks',
+              component: banks,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'accountclasses',
+              name: 'Account Classes',
+              component: accountclasses,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'accounttitles',
+              name: 'Chart of Accounts',
+              component: accounttitles,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
           ]
         },
+        {
+          path: 'masterfiles',
+          name: 'Masterfiles',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'products',
+              name: 'Products',
+              component: products,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'suppliers',
+              name: 'Suppliers',
+              component: suppliers,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'customers',
+              name: 'Customers',
+              component: customers,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'salespersons',
+              name: 'Salespersons',
+              component: salespersons,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+          ]
+        }, // END OF MASTERFILES
+        {
+          path: 'financing',
+          name: 'Financing',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'generaljournal',
+              name: 'General Journal',
+              component: generaljournal,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+          ]
+        }, // END OF FINANCING
+        {
+          path: 'settings',
+          name: 'Settings',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'generalconfiguration',
+              name: 'General',
+              component: generalconfiguration,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+          ]
+        }, // END OF MASTERFILES
       ]
     },
     {

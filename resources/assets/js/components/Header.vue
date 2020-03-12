@@ -1,11 +1,8 @@
 <template>
-  <header class="app-header navbar">
+  <header class="app-header navbar c-sidebar-light">
     <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button" @click="mobileSidebarToggle">&#9776;</button>
-    <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="uploads/logo/logo" width="100%" height="100%" alt="a">
-        <!-- <img class="navbar-brand-minimized" src="uploads/logo/logo" width="30" height="30" alt="a"> -->
-    </b-link>
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" @click="sidebarMinimize">&#9776;</button>
+    <span style="font-size: 1.2vw;vertical-align: middle;display: inline-block;color: #067cb2;    font-family: 'Segoe UI', 'Source Sans Pro', Calibri, Candara, Arial, sans-serif;">JDEV OFFICE SOLUTION INC</span>
     <!-- <b-navbar-nav class="d-md-down-none">
       <b-nav-item class="px-3">Dashboard</b-nav-item>
       <b-nav-item class="px-3">Users</b-nav-item>

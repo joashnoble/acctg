@@ -1,10 +1,11 @@
 <template>
-  <ol class="breadcrumb">
+  <!-- <ol class="breadcrumb">
     <li class="breadcrumb-item" v-for="(item, index) in filter(list)">
-      <span class="active">{{ showName(item) }}</span>
+      <span class="active">{{ showName(item) }}</span> -->
       <!-- <router-link :to="item.path" v-else>{{ showName(item) }}</router-link> -->
-    </li>
-  </ol>
+    <!-- </li>
+  </ol> -->
+  <br>
 </template>
 
 <script>

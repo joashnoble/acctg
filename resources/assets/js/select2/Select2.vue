@@ -22,7 +22,7 @@
 </style>
 
 <template>
-    <b-form-select>
+    <b-form-select v-model="value">
         <slot></slot>
     </b-form-select>
 </template>
@@ -32,7 +32,7 @@
         mounted(){
             var vm = this
             $('.modal-content').removeAttr('tabindex')
-
+            console.log(vm)
             $(this.$el)
             .select2({ 
                 // data: this.options,

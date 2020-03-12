@@ -21,7 +21,7 @@ window.printd = require('printd')
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 import FormMixin from './mixins/FormMixin'
@@ -44,6 +44,8 @@ import CKEditor from 'ckeditor4-vue';
 Vue.use( CKEditor );
 Vue.use(Notifications)
 Vue.use(DatePicker)
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
 
 Vue.component('icon', Icon)
 Vue.component('LineExample', LineExample)

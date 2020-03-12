@@ -1,0 +1,76 @@
+.card-header-primary{
+    border-top:5px solid #03a9f4!important
+}
+.borderless td, .borderless th {
+    border: none;
+}
+ul.pagination{
+    margin-bottom: 0px;
+}
+label.required:before {
+    content: '* ';
+    color: red;
+}
+.mx-input{
+    width: 100%!important;
+}
+.align-right{
+    text-align: right;
+}
+.align-center{
+    text-align: center;
+}
+hr.small-top {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 0;
+}
+
+.background-white  tr{
+    background-color:white!important;
+}
+.table-info tr td{
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border:none;
+}
+.table-accounts thead  {
+    border-bottom: 1px solid #808080
+}
+.table-accounts tr td, .table-accounts tr th{
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+.table-accounts-bordered th, .table-accounts-bordered td {
+    border: 1px solid gray!important;
+}
+.bold {
+    font-weight: bold;
+}
+ .table td {
+    padding: 0.25rem 0.75rem 0.25rem 0.75rem!important;
+    vertical-align: middle!important;
+}
+.btn-sm {
+    padding: 0.15rem 0.3rem!important;
+}
+
+.table-borderless td{
+    border-top: none!important;
+}
+.table-borderless thead th {
+    border-bottom: none!important;
+}
+.table-borderless{
+    border: 1px solid #eaeaea;
+}
+.card-header h6{
+margin-bottom: 0;
+}
