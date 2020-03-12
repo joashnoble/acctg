@@ -172,7 +172,7 @@
     <img class="d-block img-fluid" src="https://static.pexels.com/photos/33972/pexels-photo.jpg" alt="First slide">
     <div class="box">
         
-        <h2>Billing System - Login</h2>
+        <h2>Accounting System - Login</h2>
         <form @submit.prevent="authLogin()" @input="login.success = null">
 
             <div class="inputBox">

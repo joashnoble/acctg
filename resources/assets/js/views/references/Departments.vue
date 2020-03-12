@@ -120,7 +120,7 @@ export default {
                 departments: {
                     totalRows: 0,
                     currentPage: 1,
-                    perPage: 5
+                    perPage: 10
                 }
             } // END OF PAGINATION
         } // END OF DATA RETURN
