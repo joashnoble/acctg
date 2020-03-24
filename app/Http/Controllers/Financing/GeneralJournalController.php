@@ -132,8 +132,8 @@ class GeneralJournalController extends Controller
             ->leftJoin('customers', 'customers.customer_id', '=', 'journal_info.customer_id')
             ->leftJoin('suppliers', 'suppliers.supplier_id', '=', 'journal_info.supplier_id')
             ->leftJoin('user_accounts', 'user_accounts.user_id', '=', 'journal_info.created_by_user')
-            // ->where('journal_info.is_active',TRUE)
-            // ->where('journal_info.is_deleted',FALSE)
+            ->where('journal_info.is_deleted',FALSE)
+            ->where('journal_info.book_type','GJE')
             ->orderBy('journal_info.journal_id','desc')
             ;
 

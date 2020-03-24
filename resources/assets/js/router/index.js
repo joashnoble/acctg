@@ -32,6 +32,7 @@ import salespersons from '@/views/masterfiles/Salespersons'
 
 import generalconfiguration from '@/views/settings/GeneralConfiguration'
 import generaljournal from '@/views/financing/GeneralJournals'
+import cashdisbursement from '@/views/financing/CashDisbursements'
 
 
 import store from '../store'
@@ -156,6 +157,12 @@ const router = new Router({
               path: 'generaljournal',
               name: 'General Journal',
               component: generaljournal,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'cashdisbursement',
+              name: 'Cash Disbursement',
+              component: cashdisbursement,
               // meta: {requiresAuth: true, rights: '4-13'}
             },
           ]

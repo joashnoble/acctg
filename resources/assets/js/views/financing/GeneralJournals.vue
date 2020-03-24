@@ -40,7 +40,7 @@
             >
                 <template v-slot:cell(row_data)="row">
                     <i
-                    @click.stop="row.toggleDetails(),GeneralJournalFiles(row) " 
+                    @click.stop="row.toggleDetails(),GeneralJournalDetails(row) " 
                     :class="row.detailsShowing ? 'fa fa-folder-open text-danger' : 'fa fa-folder text-success'"
                     ></i>
                 </template>
@@ -462,11 +462,11 @@ export default {
         this.fillOptionsList('accounttitlesoptions');
     }, // END OF CREATED
     methods:{
-        async GeneralJournalFiles(row){
+        async GeneralJournalDetails(row){
             if(row.detailsShowing == true){
                 return
             }
-            await this.$http.get('/api/generaljournal_files/' + row.item.journal_id, {
+            await this.$http.get('/api/generaljournal_details/' + row.item.journal_id, {
                 headers: {
                       Authorization: 'Bearer ' + localStorage.getItem('token'),
                       'Content-Type' : 'multipart/form-data'
@@ -512,16 +512,21 @@ export default {
             
         },
         async onGeneralJournalEntry(){
-            var checkDate = { 'date_txn': this.forms.generaljournal.fields.date_txn}
-            if(await this.CheckJournalEntries()){ 
-                if( await this.checkPeriod(checkDate) == true){ // MEANS period is not accepted
-                    this.$notify({ type: 'error', group: 'notification', title: '<b>Accounting Period is Closed!</b>', text: 'Please make sure transaction date is valid!' })
-                }
-                else{
-                    this.forms.generaljournal.fields.journalentry = this.tables.journalentries.items;
-                    await this.createEntity('generaljournal', false, 'generaljournals')
+            if(this.forms.generaljournal.fields.date_txn == '' || this.forms.generaljournal.fields.date_txn ==  null){
+                this.$notify({ type: 'error', group: 'notification', title: '<b>Date Error!</b>', text: 'Please make sure transaction date is valid!' })
+            }else {
+                var checkDate = { 'date_txn': this.forms.generaljournal.fields.date_txn}
+                if(await this.CheckJournalEntries()){ 
+                    if( await this.checkPeriod(checkDate) == true){ // MEANS period is not accepted
+                        this.$notify({ type: 'error', group: 'notification', title: '<b>Accounting Period is Closed!</b>', text: 'Please make sure transaction date is valid!' })
+                    }
+                    else{
+                        this.forms.generaljournal.fields.journalentry = this.tables.journalentries.items;
+                        await this.createEntity('generaljournal', false, 'generaljournals')
+                    }
                 }
             }
+
 
         },
         CheckJournalEntries(){

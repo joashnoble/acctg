@@ -38,7 +38,7 @@ export default {
     },
     methods: {
         onDeleteEntry(){
-            this.$parent.CancelJournalEntry('generaljournal', 'journal_id', true, this.row, 'canceljournal')
+            this.$parent.CancelJournalEntry(this.entity, 'journal_id', true, this.row, 'canceljournal')
         },
         async setCancel(row){
             if(row.is_active == 1){ this.type = 'Cancel' }else{ this.type = 'Uncancel'}

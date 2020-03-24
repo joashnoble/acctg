@@ -602,7 +602,7 @@
         },
         CancelJournalEntry (entity, entity_id, isModal, row, refs, is_tab = false) {
           this.$refs[refs].isSaving = true
-          this.$http.put('api/canceljournal/' + row.journal_id , row.journal_id, {
+          this.$http.put('api/'+entity+'canceljournal/' + row.journal_id , row.journal_id, {
               headers: {
                       Authorization: 'Bearer ' + localStorage.getItem('token')
                   }

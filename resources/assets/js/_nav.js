@@ -17,6 +17,12 @@ export default {
           // rights: '4-13',
           icon: 'fa fa-book'
         },
+        {
+          name: 'Cash Disbursement',
+          url: '/financing/cashdisbursement',
+          // rights: '4-13',
+          icon: 'fa fa-book'
+        },
       ]
     }, // END OF FINANCING
     {

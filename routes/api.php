@@ -36,16 +36,19 @@ Route::middleware('auth:api')->group(function () {
 // FINANCING
 Route::get('journalcustomers','Masterfiles\CustomersController@journalCustomers'); // MINIMAL LIST, USED FOR SELECT2 OPTIONS
 Route::get('journalsuppliers','Masterfiles\SuppliersController@journalSuppliers'); // MINIMAL LIST, USED FOR SELECT2 OPTIONS
-
-// GENERAL JOURNAL
+Route::post('accountingperiodcheck', 'Financing\GeneralJournalController@checkPeriod'); // GLOBAL PERIOD CHECKER
 
 // GENERAL  JOURNAL
 Route::get('generaljournals','Financing\GeneralJournalController@index');
-Route::get('generaljournal_files/{id}', 'Financing\GeneralJournalController@showFiles');
+Route::get('generaljournal_details/{id}', 'Financing\GeneralJournalController@showFiles');
 Route::post('generaljournal', 'Financing\GeneralJournalController@create');
-Route::put('canceljournal/{id}', 'Financing\GeneralJournalController@cancelJournal');
-Route::post('accountingperiodcheck', 'Financing\GeneralJournalController@checkPeriod'); // PENDING
+Route::put('generaljournalcanceljournal/{id}', 'Financing\GeneralJournalController@cancelJournal');
 
+// CASH DISBURSEMENT JOURNAL
+Route::get('cashdisbursements','Financing\CashDisbursementJournalController@index');
+Route::get('cashdisbursement_details/{id}', 'Financing\CashDisbursementJournalController@showFiles');
+Route::post('cashdisbursement', 'Financing\CashDisbursementJournalController@create');
+Route::put('cashdisbursementcanceljournal/{id}', 'Financing\CashDisbursementJournalController@cancelJournal');
 
 
 
@@ -126,6 +129,7 @@ Route::get('accounttitlecheck/{id}', 'References\AccountTitlesController@checkIf
 Route::get('taxtypes','References\TaxTypesController@index');
 Route::get('itemtypes','References\ItemTypesController@index');
 Route::get('customertypes','References\CustomerTypesController@index');
+Route::get('paymentmethods','References\PaymentMethodsController@index');
 
 // MASTERFILES
 
