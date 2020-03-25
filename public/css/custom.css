@@ -1,9 +1,10 @@
 .card-header-primary{
     border-top:5px solid #03a9f4!important
 }
-.borderless td, .borderless th {
-    border: none;
+.card-header h6{
+    margin-bottom: 0;
 }
+
 ul.pagination{
     margin-bottom: 0px;
 }
@@ -26,11 +27,29 @@ hr.small-top {
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
-.ellipsis {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 0;
+
+.bold {
+    font-weight: bold;
+}
+
+.btn-sm {
+    padding: 0.15rem 0.3rem!important;
+}
+
+/* TABLE CSS */
+.table-borderless td{
+    border-top: none!important;
+}
+.table-borderless thead th {
+    border-bottom: none!important;
+}
+.table-borderless{
+    border: 1px solid #eaeaea;
+}
+
+.table td {
+    padding: 0.25rem 0.75rem 0.25rem 0.75rem!important;
+    vertical-align: middle!important;
 }
 
 .background-white  tr{
@@ -51,26 +70,26 @@ hr.small-top {
 .table-accounts-bordered th, .table-accounts-bordered td {
     border: 1px solid gray!important;
 }
-.bold {
-    font-weight: bold;
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 0;
 }
- .table td {
-    padding: 0.25rem 0.75rem 0.25rem 0.75rem!important;
-    vertical-align: middle!important;
-}
-.btn-sm {
-    padding: 0.15rem 0.3rem!important;
+.borderless td, .borderless th {
+    border: none;
 }
 
-.table-borderless td{
-    border-top: none!important;
-}
-.table-borderless thead th {
-    border-bottom: none!important;
-}
-.table-borderless{
-    border: 1px solid #eaeaea;
-}
-.card-header h6{
-margin-bottom: 0;
+
+/* SIDEBAR CSS */
+.nav-dropdown-items .nav-link i {
+    width: 10px!important;
+  }
+.nav-dropdown-items .nav-link i::before {
+    content: " ";
+    white-space: pre;
+  }
+span.badge-secondary{
+    color:transparent!important;
+    background-color: transparent;
 }
