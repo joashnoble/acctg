@@ -56,12 +56,18 @@ Route::get('accountreceivable_details/{id}', 'Financing\AccountReceivableJournal
 Route::post('accountreceivable', 'Financing\AccountReceivableJournalController@create');
 Route::put('accountreceivablecanceljournal/{id}', 'Financing\AccountReceivableJournalController@cancelJournal');
 
-
 // ACCOUNTS RECEIVABLE JOURNAL
 Route::get('accountpayables','Financing\AccountPayableJournalController@index');
 Route::get('accountpayable_details/{id}', 'Financing\AccountPayableJournalController@showFiles');
 Route::post('accountpayable', 'Financing\AccountPayableJournalController@create');
 Route::put('accountpayablecanceljournal/{id}', 'Financing\AccountPayableJournalController@cancelJournal');
+
+// CASH RECEIPT JOURNAL
+Route::get('cashreceipts','Financing\CashReceiptJournalController@index');
+Route::get('cashreceipt_details/{id}', 'Financing\CashReceiptJournalController@showFiles');
+Route::post('cashreceipt', 'Financing\CashReceiptJournalController@create');
+Route::put('cashreceiptcanceljournal/{id}', 'Financing\CashReceiptJournalController@cancelJournal');
+
 
 
 // REFERENCES

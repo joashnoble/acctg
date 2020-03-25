@@ -236,13 +236,12 @@
                         <label> Bank </label>
                         <select2
                             :allowClear="false"
-                            :placeholder="'Select Payment Method'"
+                            :placeholder="'Select Bank Account'"
                             v-model="forms.cashdisbursement.fields.bank_id"
                         >
                                 <option v-for="banks in options.banks.items" :key="banks.bank_id" :value="banks.bank_id">{{banks.account_number}} - {{banks.bank_name}}</option>
                         </select2>
                     </b-form-group>
-                </b-col>
                 </b-col>
             </b-row>
             <b-row>
