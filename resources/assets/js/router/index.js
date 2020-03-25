@@ -33,6 +33,7 @@ import salespersons from '@/views/masterfiles/Salespersons'
 import generalconfiguration from '@/views/settings/GeneralConfiguration'
 import generaljournal from '@/views/financing/GeneralJournals'
 import cashdisbursement from '@/views/financing/CashDisbursements'
+import accountreceivables from '@/views/financing/AccountReceivables'
 
 
 import store from '../store'
@@ -163,6 +164,12 @@ const router = new Router({
               path: 'cashdisbursement',
               name: 'Cash Disbursement',
               component: cashdisbursement,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'accountreceivables',
+              name: 'Accounts Receivables',
+              component: accountreceivables,
               // meta: {requiresAuth: true, rights: '4-13'}
             },
           ]

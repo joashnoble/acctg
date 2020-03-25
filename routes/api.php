@@ -50,6 +50,11 @@ Route::get('cashdisbursement_details/{id}', 'Financing\CashDisbursementJournalCo
 Route::post('cashdisbursement', 'Financing\CashDisbursementJournalController@create');
 Route::put('cashdisbursementcanceljournal/{id}', 'Financing\CashDisbursementJournalController@cancelJournal');
 
+Route::get('accountreceivables','Financing\AccountReceivableJournalController@index');
+Route::get('accountreceivable_details/{id}', 'Financing\AccountReceivableJournalController@showFiles');
+Route::post('accountreceivable', 'Financing\AccountReceivableJournalController@create');
+Route::put('accountreceivablecanceljournal/{id}', 'Financing\AccountReceivableJournalController@cancelJournal');
+
 
 
 // REFERENCES

@@ -95,9 +95,9 @@ class CashDisbursementJournalController extends Controller
                 ];
             }
             DB::table('journal_accounts')->insert($entries_dataSet);
-            $gentxn = JournalInfo::findOrFail($cashdisbursement->journal_id);
-            $gentxn->txn_no = 'TXN-'.date('Ymd').'-'.$cashdisbursement->journal_id;
-            $gentxn->save();
+            $cashdistxn = JournalInfo::findOrFail($cashdisbursement->journal_id);
+            $cashdistxn->txn_no = 'TXN-'.date('Ymd').'-'.$cashdisbursement->journal_id;
+            $cashdistxn->save();
         }
 
         return ( new Reference( $this->GetCashDisbursementJournals($cashdisbursement->journal_id)->get()[0] ))
