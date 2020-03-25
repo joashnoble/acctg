@@ -24,7 +24,13 @@ export default {
           icon: 'fa fa-book'
         },
         {
-          name: 'Accounts Receivables',
+          name: 'Accounts Payable',
+          url: '/financing/accountpayables',
+          // rights: '4-13',
+          icon: 'fa fa-book'
+        },
+        {
+          name: 'Accounts Receivable',
           url: '/financing/accountreceivables',
           // rights: '4-13',
           icon: 'fa fa-book'

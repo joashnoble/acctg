@@ -89,11 +89,11 @@ ul {
 </div>
 <div v-show="showEntry" class="animated fadeIn">
       <b-card border-variant="default" class="text-left card-header-primary">
-        <h5 slot="header">
+        <h6 slot="header">
             <span >Chart of Accounts
                 <small> |  {{entryMode}}</small>
             </span>
-        </h5>
+        </h6>
     <!-- FORM -->
             <b-form autocomplete="off">
                 <b-row>

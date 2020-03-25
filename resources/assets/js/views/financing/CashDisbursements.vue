@@ -158,11 +158,11 @@
 </div>
 <div v-show="showEntry" class="animated fadeIn">
     <b-card border-variant="default" class="text-left card-header-primary">
-        <h5 slot="header">
+        <h6 slot="header">
             <span >Cash Disbursement | New
                 <small>  <b-icon-question></b-icon-question></small>
             </span>
-        </h5>
+        </h6>
         <b-form autocomplete="off">
             <b-row>
                 <b-col sm="3">
