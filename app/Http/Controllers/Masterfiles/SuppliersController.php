@@ -96,6 +96,20 @@ class SuppliersController extends Controller
             ->setStatusCode(200);
     }
 
+    public function minimalsuppliers(){
+        $suppliers = Supplier::select(
+            'supplier_id',
+            'supplier_name',
+            )
+            ->orderBy('suppliers.supplier_name','ASC')
+            ->where('suppliers.is_active',TRUE)
+            ->where('suppliers.is_deleted',FALSE);
+
+            return ( new Reference($suppliers->get()))
+            ->response()
+            ->setStatusCode(200);
+    }
+
     public function GetSuppliers($id=null) // List only, without on hand
     {
         $suppliers = Supplier::select(

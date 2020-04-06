@@ -33,6 +33,11 @@ export default {
           icon: ''
         },
         {
+          name: 'Petty Cash Journal',
+          url: '/financing/pettycashjournals',
+          // rights: '4-13',
+        },
+        {
           name: 'Cash Receipts',
           url: '/financing/cashreceipts',
           // rights: '4-13',

@@ -36,6 +36,7 @@ import cashdisbursement from '@/views/financing/CashDisbursements'
 import accountreceivables from '@/views/financing/AccountReceivables'
 import accountpayables from '@/views/financing/AccountPayables'
 import cashreceipts from '@/views/financing/CashReceipts'
+import pettycashjournals from '@/views/financing/PettyCashJournals'
 
 
 import store from '../store'
@@ -178,6 +179,12 @@ const router = new Router({
               path: 'accountreceivables',
               name: 'Accounts Receivables',
               component: accountreceivables,
+              // meta: {requiresAuth: true, rights: '4-13'}
+            },
+            {
+              path: 'pettycashjournals',
+              name: 'Petty Cash',
+              component: pettycashjournals,
               // meta: {requiresAuth: true, rights: '4-13'}
             },
             {

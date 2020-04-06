@@ -20,7 +20,7 @@ class DepartmentsController extends Controller
             'department_desc')
             ->where('is_active',TRUE)
             ->where('is_deleted',FALSE)
-            ->orderBy('department_name','desc')
+            ->orderBy('department_name','asc')
             ;
         return Reference::collection($departments->get())
         ->response()

@@ -93,3 +93,6 @@ span.badge-secondary{
     color:transparent!important;
     background-color: transparent;
 }
+.nav-item{
+    line-height: 1.0;
+}
