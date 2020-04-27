@@ -74,10 +74,51 @@ class PettyCashJournalController extends Controller
                 'department_id' => $department_id
             ) );
 
-            $data['unreplenished_amount'] = number_format($unreplenished[0]->unreplenished_expense,2);
-            $data['balance_amount'] = number_format($balance[0]->balance,2);
+            $data['unreplenished_amount'] = $unreplenished[0]->unreplenished_expense;
+            $data['balance_amount'] = $balance[0]->balance;
         return  $data ;
     }
+
+    public function get_totalsexcept($as_of_date = null,$department_id=null,$journal_id)
+    {
+        $balance = DB::select( DB::raw("
+        SELECT
+        (CASE WHEN x.`account_type_id` = 1 OR x.account_type_id=5 THEN
+        IFNULL(((x.dr_amount) - (x.cr_amount)),0)
+        ELSE
+        IFNULL(((x.cr_amount) - (x.dr_amount)),0)
+        END) as balance
+        FROM
+            (SELECT
+            petty_cash_account_id,
+            ja.journal_id,
+            ac.account_type_id,
+            SUM(ja.dr_amount) AS dr_amount,
+            SUM(ja.cr_amount) AS cr_amount,
+            ji.date_txn,
+            ji.department_id
+            
+            FROM `account_integration` AS ai
+
+        LEFT JOIN journal_accounts AS ja ON ja.account_id=ai.petty_cash_account_id
+        LEFT JOIN account_titles AS atitles ON atitles.account_id=ai.petty_cash_account_id
+        LEFT JOIN account_classes AS ac ON ac.`account_class_id`=atitles.`account_class_id`
+        LEFT JOIN journal_info AS ji ON ji.journal_id=ja.`journal_id` AND ji.is_active=TRUE AND ji.is_deleted=FALSE
+
+        WHERE ji.is_replenished=FALSE AND ji.date_txn <= :as_of_date  AND ji.department_id=:department_id 
+        AND ji.journal_id != :journal_id
+        ) AS x 
+        "), 
+        array(
+            'as_of_date' => $as_of_date,
+            'department_id' => $department_id,
+            'journal_id' => $journal_id,
+        ) );
+
+            $data['balance_amount'] = $balance[0]->balance;
+        return  $data ;
+    }
+
 
     public function show($id)
     {

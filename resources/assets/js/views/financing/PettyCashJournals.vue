@@ -82,13 +82,24 @@
                 <b-tr>
                     <b-td width="90%" class="align-right bold">Unreplenished:</b-td>
                     <b-td class="bold align-right">
-                        {{ unreplenished_amount}}
+                    <vue-autonumeric 
+                        readonly=""
+                        :class="'form-control text-right '"
+                        v-model="unreplenished_amount" 
+                        :options="{modifyValueOnWheel: false, emptyInputBehavior: 0}">
+                    </vue-autonumeric>
                     </b-td>
                 </b-tr>
                 <b-tr>
                     <b-td width="90%" class="align-right bold">Remaining:</b-td>
                     <b-td  class="bold align-right">
-                        {{ remaining_amount}}
+                    <vue-autonumeric 
+                        readonly =""
+                        :class="'form-control text-right '"
+                        v-model="remaining_amount" 
+                        :options="{modifyValueOnWheel: false, emptyInputBehavior: 0}">
+                    </vue-autonumeric>
+                    </b-td>
                     </b-td>
                 </b-tr>
             </b-tbody>
@@ -99,7 +110,7 @@
             <b-row mb="0">
                 <b-col sm="6" class="my-1 mb-0">
                     <b-button class="mb-2" variant="success" 
-                        @click="showModalEntry = true,entryMode='Add', clearJournal()"
+                        @click="setAdd()"
                         :disabled="forms.pettycashjournal.fields.department_id == 0 ? true : false"
                         >
                         New Expense
@@ -262,7 +273,12 @@ input[readonly]{
     border: 0;
     font-size: 1em;
 }
-
+.table-summary td{
+    padding: 0px!important;
+}
+.table-summary{
+    border:none;
+}
 </style>
 <script>
 import deleteentry from '../modals/DeleteEntry'
@@ -277,8 +293,8 @@ export default {
         entryMode: 'Add',
         showModalEntry: false,
         showModalDelete: false,
-        unreplenished_amount: 0.00,
-        remaining_amount:0.00,
+        unreplenished_amount: 0,
+        remaining_amount:0,
         selectedID: 0,
         as_of_date: moment().format('YYYY-MM-DD'),
             options:{
@@ -388,7 +404,18 @@ export default {
             this.forms.pettycashjournal.fields.amount = 0.00,
             this.forms.pettycashjournal.fields.date_txn = new Date()
         },
-        
+        setAdd(){
+            if(this.remaining_amount <= 0 ) {
+                this.$notify({
+                    type: 'error',group: 'notification',title: 'Error!',text: 'Petty cash amount must not be zero in your chosen department..'
+                })
+            }else{
+                this.showModalEntry = true
+                this.entryMode='Add'
+                this.clearJournal()
+
+            }
+        },
         setUpdate(data){
             this.row = data.item
             console.log(this.row);
@@ -403,8 +430,14 @@ export default {
         },
         async onPettyCashEntry(){
             if(this.entryMode == 'Add'){
+                await this.refreshPettyCashTotals()
+                if(this.remaining_amount < this.forms.pettycashjournal.fields.amount ) {
+                    this.$notify({
+                        type: 'error',group: 'notification',title: 'Error!',text: 'Expense amount must not exceed petty cash amount .'
+                    })
+                }else {
                     this.forms['pettycashjournal'].isSaving = true
-                    this.$http.post('api/pettycashjournal', this.forms['pettycashjournal'].fields,{
+                    await this.$http.post('api/pettycashjournal', this.forms['pettycashjournal'].fields,{
                         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                     })
                     .then((response) => {  
@@ -430,44 +463,55 @@ export default {
                             a++
                         }
                     })
-                
+                }
             }
             else{
-                this.forms['pettycashjournal'].isSaving = true
-                this.$http.put('api/pettycashjournal/' + this.forms['pettycashjournal'].fields['journal_id'], this.forms['pettycashjournal'].fields ,{
-                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                var as_of_date = this.moment(this.as_of_date, 'YYYY-MM-DD')
+                await this.$http.get('/api/pettycashtotalsexcept/'+as_of_date +'/'+this.forms.pettycashjournal.fields.department_id+'/'+ this.forms.pettycashjournal.fields.journal_id,{
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }})
                     .then((response) => {
-
-                    this.forms['pettycashjournal'].isSaving = false
-                    this.$notify({ type: 'success', group: 'notification', title: 'Success!', text: 'The record has been successfully updated.'})
-                    for (var key in response.data.data) {
-                        this.row[key] = response.data.data[key]
-                    }
-                    this.showModalEntry = false
-                    this.refreshPettyCashTotals()
-                    }).catch(error => {
-                    this.forms['pettycashjournal'].isSaving = false
-                    if (!error.response) return
-                    const errors = error.response.data.errors
-                    var a = 0
-                    for (var key in errors) {
-                        if(a == 0){
-                            this.focusElement(key, is_tab)
-                            this.$notify({ type: 'error', group: 'notification', title: 'Error!', text: errors[key][0]
-                        })
-                        }
-                        a++
-                    }
-                    })
                         
-                    }
+                    if(response.data.balance_amount < this.forms.pettycashjournal.fields.amount ) { // CHECK AMOUNT WITHOUT CURRENT JOURNAL TO CHECK 
+                        this.$notify({
+                            type: 'error',group: 'notification',title: 'Error!',text: 'Expense amount must not exceed petty cash amount .'
+                        })
+                    }else { // AMOUNT IS OK
+                        this.forms['pettycashjournal'].isSaving = true
+                        this.$http.put('api/pettycashjournal/' + this.forms['pettycashjournal'].fields['journal_id'], this.forms['pettycashjournal'].fields ,{
+                        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+                        .then((response) => {
+                            this.forms['pettycashjournal'].isSaving = false
+                            this.$notify({ type: 'success', group: 'notification', title: 'Success!', text: 'The record has been successfully updated.'})
+                            for (var key in response.data.data) {
+                                this.row[key] = response.data.data[key]
+                            }
+                            this.showModalEntry = false
+                            this.refreshPettyCashTotals()
+                        }).catch(error => {
+                        this.forms['pettycashjournal'].isSaving = false
+                        if (!error.response) return
+                        const errors = error.response.data.errors
+                        var a = 0
+                        for (var key in errors) {
+                            if(a == 0){
+                                this.focusElement(key, is_tab)
+                                this.$notify({ type: 'error', group: 'notification', title: 'Error!', text: errors[key][0]
+                            })
+                            }
+                            a++
+                        }
+                        }) // END OF AXIOS UPDATE
+                    } // END OF IF ELSE 
+
+                })
+                .catch(error => { if (!error.response) return console.log(error)
+                }) // END OF AXIOS GET TOTALS EXCEPT            
+        }
         },
         async onPettyCashDelete(){
           this.forms['pettycashjournal'].isDeleting = true
           this.$http.put('api/pettycashjournal/delete/' + this.selectedID , this.forms['pettycashjournal'].fields  ,{
-              headers: {
-                      Authorization: 'Bearer ' + localStorage.getItem('token')
-                  }
+              headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
             })
             .then((response) => {
                 this.forms['pettycashjournal'].isDeleting = false

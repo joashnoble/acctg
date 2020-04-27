@@ -72,6 +72,7 @@ Route::put('cashreceiptcanceljournal/{id}', 'Financing\CashReceiptJournalControl
 // PETTY CASH JOURNAL
 Route::get('pettycashjournals/{as_of_date}/{department_id}','Financing\PettyCashJournalController@index');
 Route::get('pettycashtotals/{as_of_date}/{department_id}','Financing\PettyCashJournalController@get_totals');
+Route::get('pettycashtotalsexcept/{as_of_date}/{department_id}/{journal_id}','Financing\PettyCashJournalController@get_totalsexcept');
 Route::get('pettycashjournal/{id}','Financing\PettyCashJournalController@show');
 Route::post('pettycashjournal', 'Financing\PettyCashJournalController@create');
 Route::put('pettycashjournal/{id}', 'Financing\PettyCashJournalController@update');
