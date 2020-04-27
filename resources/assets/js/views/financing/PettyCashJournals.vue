@@ -117,6 +117,7 @@
                     </b-button>
                     <b-button class="mb-2" variant="primary" 
                         :disabled="forms.pettycashjournal.fields.department_id == 0 ? true : false"
+                        @click="setReplenish()"
                         >
                         Replenish
                     </b-button>
@@ -252,7 +253,7 @@
         <div slot="modal-title">
             Delete Expense
         </div>
-        <b-col lg=12>
+        <b-col lg="12">
             Are you sure you want to delete this expense?
         </b-col>
         <div slot="modal-footer">
@@ -264,6 +265,107 @@
             <b-button variant="danger" @click="showModalDelete=false, selectedID = 0">Close</b-button>            
         </div>
     </b-modal>
+
+    <b-modal 
+        v-model="showModalReplenish"
+        :noCloseOnEsc="true"
+        :noCloseOnBackdrop="true"
+        size="lg"
+    >
+        <div slot="modal-title">
+            Confirm Replenishment
+        </div>
+        <b-col lg=12>
+            <b-form autocomplete="off">
+                <b-row>
+                    <b-col sm="6">
+                        <b-form-group>
+                            <label class="required"> Payment Method </label>
+                            <select2
+                                :allowClear="false"
+                                :placeholder="'Select Payment Method'"
+                                v-model="forms.replenishment.fields.payment_method_id"
+                            >
+                                    <option v-for="payment in options.paymentmethods.items" :key="payment.payment_method_id" :value="payment.payment_method_id">{{payment.payment_method}}</option>
+                            </select2>
+                        </b-form-group>
+                    </b-col>
+                    <b-col sm="6">
+                    <b-form-group>
+                        <label class="required"> Particular </label>
+                        <select2
+                            :allowClear="false"
+                            :placeholder="'Select Particular'"
+                            v-model="forms.replenishment.fields.particular_id"
+                        >
+                            <optgroup label="Suppliers">
+                                <option v-for="supplier in options.journalsuppliers.items" :key="supplier.particular_id" :value="supplier.particular_id">{{supplier.supplier_name}}</option>
+                            </optgroup>
+                        </select2>
+                    </b-form-group>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col sm="4">
+                        <b-form-group>
+                            <label> Bank </label>
+                            <select2
+                                :allowClear="false"
+                                :placeholder="'Select Bank Account'"
+                                v-model="forms.replenishment.fields.bank_id"
+                            >
+                                    <option v-for="banks in options.banks.items" :key="banks.bank_id" :value="banks.bank_id">{{banks.account_number}} - {{banks.bank_name}}</option>
+                            </select2>
+                        </b-form-group>
+                    </b-col>
+                    <b-col sm="4">
+                        <label >Check Date</label>
+                        <date-picker  style="width:100%"
+                            v-model="forms.replenishment.fields.check_date" 
+                            lang="en" 
+                            input-class="form-control mx-input"
+                            format="MMMM DD, YYYY"
+                            :clearable="false">
+                        </date-picker>
+                    </b-col>
+                    <b-col sm="4">
+                        <b-form-group>
+                            <label >Check Number</label>
+                            <b-form-input
+                                v-model="forms.replenishment.fields.check_no"
+                                debounce="250"
+                                type="text"
+                                >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+                <b-row>
+                <b-col sm="12">
+                    <b-form-group>
+                        <label class="required">Credit Entry Account Title</label>
+                        <select2
+                            :allowClear="false"
+                            :placeholder="'Select Credit Entry Account'"
+                            v-model="forms.replenishment.fields.account_id_credit"
+                        >
+                        <option v-for="accounttitleop in options.accounttitlesoptions.items" :key="accounttitleop.account_id" :value="accounttitleop.account_id">{{accounttitleop.account_title}}</option>
+                        </select2>
+                    </b-form-group>
+                </b-col>
+                </b-row>
+            </b-form>
+        </b-col>
+        <div slot="modal-footer">
+                <b-button :disabled="forms.replenishment.isSaving" variant="success" @click="onPettyCashReplenishment">
+                    <icon v-if="forms.replenishment.isSaving" name="sync" spin></icon>
+                    <i class="fa fa-check"></i>
+                    Accept
+                </b-button>
+            <b-button variant="danger" @click="showModalReplenish=false, selectedID = 0">Close</b-button>            
+        </div>
+    </b-modal>
+
 
 </div>
 </template>
@@ -293,6 +395,7 @@ export default {
         entryMode: 'Add',
         showModalEntry: false,
         showModalDelete: false,
+        showModalReplenish : false,
         unreplenished_amount: 0,
         remaining_amount:0,
         selectedID: 0,
@@ -300,7 +403,11 @@ export default {
             options:{
                 pettycashaccounts: { items:[]},
                 minimalsuppliers: { items:[]},
-                departments: { items:[]}
+                departments: { items:[]},
+                paymentmethods:{ items: [] },
+                banks:{ items: [] },
+                accounttitlesoptions : { items: []},
+                journalsuppliers : { items: []},
 
             },
             tables: {
@@ -367,6 +474,19 @@ export default {
                         date_txn : new Date(),
                     }
 
+                },
+                replenishment :{
+                    isSaving: false,
+                    fields:{
+                        payment_method_id: null,
+                        check_date : new Date(),
+                        check_no : '',
+                        bank_id : null,
+                        account_id_credit : null,
+                        on_or_before : new Date(),
+                        department_id : null,
+                        particular_id : null,
+                    }
                 }
             },
             filters: {
@@ -388,6 +508,10 @@ export default {
         this.fillOptionsList('pettycashaccounts');
         this.fillOptionsList('minimalsuppliers');
         this.fillOptionsList('departments');
+        this.fillOptionsList('paymentmethods');
+        this.fillOptionsList('banks');
+        this.fillOptionsList('accounttitlesoptions');
+        this.fillOptionsList('journalsuppliers');
         this.refreshPettyCashTotals();
     }, // END OF CREATED
     methods:{
@@ -416,6 +540,17 @@ export default {
 
             }
         },
+        setReplenish(){
+            this.forms.replenishment.fields.payment_method_id =  1;
+            this.forms.replenishment.fields.check_date = new Date();
+            this.forms.replenishment.fields.check_no = '';
+            this.forms.replenishment.fields.bank_id = null;
+            this.forms.replenishment.fields.account_id_credit = null;
+            this.forms.replenishment.fields.particular_id = null;
+            this.showModalReplenish = true
+            this.forms.replenishment.fields.on_or_before = this.moment(this.as_of_date, 'YYYY-MM-DD');
+            this.forms.replenishment.fields.department_id = this.forms.pettycashjournal.fields.department_id;
+        },
         setUpdate(data){
             this.row = data.item
             console.log(this.row);
@@ -426,6 +561,55 @@ export default {
         setDelete(journal_id){
             this.selectedID = journal_id
             this.showModalDelete = true;
+
+        },
+        async onPettyCashReplenishment(){
+            this.forms['replenishment'].isSaving = true
+                var as_of_date = this.moment(this.as_of_date, 'YYYY-MM-DD')
+                await this.$http.get('/api/pettycashtotals/'+as_of_date +'/'+this.forms.pettycashjournal.fields.department_id,{
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }})
+                    .then((response) => {
+                        
+                        if(response.data.unreplenished_amount <= 0){
+                            this.forms['replenishment'].isSaving = false
+                            this.$notify({
+                            type: 'error',group: 'notification',title: 'Error!',text: 'No Transactions to process.'
+                            })
+                        }else {
+
+
+                        this.$http.post('api/pettycashreplenishment', this.forms['replenishment'].fields,{
+                            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+                        })
+                        .then((response) => {  
+                            this.forms['replenishment'].isSaving = false
+                            this.$notify({
+                            type: 'success',group: 'notification',title: 'Success!',text: 'Petty Cash successfully replenished.'
+                            })
+                            this.showModalReplenish = false;
+                            this.refreshPettyCashTotals()
+                            this.filterPettyCash()
+                        }).catch(error => {
+                            this.forms['replenishment'].isSaving = false
+                            if (!error.response) return
+                            const errors = error.response.data.errors
+                            var a = 0
+                            for (var key in errors) {
+                                if(a == 0){
+                                this.$notify({type: 'error',group: 'notification',title: 'Error!',text: errors[key][0]
+                                })
+                                }
+                                a++
+                            }
+                        })
+
+
+
+                        }
+                    })
+                    .catch(error => { if (!error.response) return console.log(error)
+                    })
+
 
         },
         async onPettyCashEntry(){
@@ -535,12 +719,12 @@ export default {
             await this.$http.get('/api/pettycashtotals/'+as_of_date +'/'+this.forms.pettycashjournal.fields.department_id,{
                 headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }})
                 .then((response) => {
-                    this.remaining_amount = response.data.balance_amount
-                    this.unreplenished_amount = response.data.unreplenished_amount
+                    if(response.data.balance_amount == null){ this.remaining_amount = 0;  } else { this.remaining_amount = response.data.balance_amount; }
+                    if(response.data.unreplenished_amount == null){ this.unreplenished_amount = 0;  } else { this.unreplenished_amount = response.data.unreplenished_amount; }
                 })
                 .catch(error => { if (!error.response) return console.log(error)
                 })
-        }
+        },
     } // END OF METHODS
 }// END OF EXPORT 
 </script>

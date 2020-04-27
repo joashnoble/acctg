@@ -78,6 +78,7 @@ Route::post('pettycashjournal', 'Financing\PettyCashJournalController@create');
 Route::put('pettycashjournal/{id}', 'Financing\PettyCashJournalController@update');
 Route::put('pettycashjournal/delete/{id}', 'Financing\PettyCashJournalController@delete');
 Route::get('pettycashaccounts','Financing\PettyCashJournalController@pettycashaccounts');
+Route::post('pettycashreplenishment','Financing\PettyCashJournalController@replenish');
 // REFERENCES
 
 // ACCOUNT TYPES

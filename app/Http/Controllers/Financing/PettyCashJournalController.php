@@ -9,6 +9,7 @@ use App\Models\Financing\JournalInfo;
 use App\Models\Financing\JournalAccounts;
 use App\Models\Settings\GeneralConfiguration;
 use App\Models\References\AccountTitle;
+use App\Models\References\Batch;
 use App\Http\Resources\Reference;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -274,6 +275,126 @@ class PettyCashJournalController extends Controller
         return ( new Reference( $pcv ) )
             ->response()
             ->setStatusCode(200);
+    }
+
+    public function replenish(Request $request)
+    {   
+
+        if($request->input('payment_method_id') == 2)
+        {
+            Validator::make($request->all(),
+                [
+                    'bank_id' => 'required|not_in:0',
+                    'check_no' => 'required|not_in:0',
+                    'check_date' => 'required|not_in:0',
+                ],  ['not_in' => 'The :attribute field is required.']
+            )->setAttributeNames([
+                'bank_id' => 'Bank',
+                'check_no'=>'Check Number',
+                'check_date' => 'Check Date',
+                ]
+            )->validate();
+        }
+
+        Validator::make($request->all(),
+        [
+            'check_date' => 'required_if:payment_method_id,2',
+            'check_no' => 'required_if:payment_method_id,2',
+            'department_id' => 'required|not_in:0',
+            'particular_id' => 'required|not_in:0',
+            'payment_method_id' => 'required|not_in:0',
+            'account_id_credit' => 'required|not_in:0',
+        ],
+        [
+            'not_in' => 'The :attribute field is required.',
+            'required_if' => 'The :attribute field is required.'
+        ])
+        ->setAttributeNames([
+            'department_id' => 'Department',
+            'particular_id' => 'Particular',
+            'check_no' => 'Check Number',
+            'check_date' => 'Check Date',
+            'payment_method_id' => 'Payment Method',
+            'account_id_credit' => 'Credit Entry Account']
+        )->validate();
+
+        $on_or_before = $request->input('on_or_before');
+        $department_id = $request->input('department_id');
+
+        $batch = new Batch();
+        $batch->date_replenished = Carbon::now();
+        $batch->save();
+        $batchtxn = Batch::findOrFail($batch->batch_id);
+        $batchtxn->batch_no = 'PCVB-'.date('Ymd').'-'.$batch->batch_id;
+        $batchtxn->save();
+
+        $unreplenished = DB::select( DB::raw("
+            SELECT 
+            SUM(ji.amount) AS unreplenished_expense
+            
+            FROM journal_info ji 
+            WHERE ji.is_replenished=0
+            AND ji.book_type='PCV'
+            AND ji.is_active=TRUE
+            AND ji.is_deleted=FALSE
+            AND ji.date_txn <= :as_of_date  AND ji.department_id=:department_id
+        
+            "), 
+            array(
+                'as_of_date' => $on_or_before,
+                'department_id' => $department_id
+            ) );
+
+        JournalInfo::where('date_txn', '<=', $on_or_before)
+        ->where('department_id', '=', $department_id)
+        ->where('is_active', '=', TRUE)
+        ->where('is_deleted', '=', FALSE)
+        ->where('book_type', '=', 'PCV')
+        ->update(['is_replenished' => TRUE , 'batch_id' => $batch->batch_id ]);
+
+        $particular=explode('-',$request->input('particular_id'));
+        $transaction = new JournalInfo();
+        $transaction->supplier_id=$particular[1];
+        $transaction->department_id=$department_id;
+        $transaction->remarks= "To Replenish Petty Cash on or before $on_or_before";
+        $transaction->book_type='CDJ';
+        $transaction->is_replenished=TRUE;
+
+        $transaction->payment_method_id=$request->input('payment_method_id');
+        if($request->input('payment_method_id')== 2){
+            $transaction->check_no=$request->input('check_no');
+            $transaction->check_date = date("Y-m-d", strtotime($request->input('check_date')));
+        }
+
+        $transaction->amount = $unreplenished[0]->unreplenished_expense;
+        $transaction->date_txn = date("Y-m-d", strtotime(Carbon::now()));
+        $transaction->date_created = Carbon::now();
+        $transaction->save();
+
+        $journal_id = $transaction->journal_id;
+        $transactiontxn = JournalInfo::findOrFail($journal_id);
+        $transactiontxn->txn_no = 'TXN-'.date('Ymd').'-'.$journal_id;
+        $transactiontxn->save();
+
+        $companysettings = GeneralConfiguration::select('petty_cash_account_id')->where('integration_id',1)->get()[0];
+
+        $journalaccounts = new JournalAccounts();
+        $journalaccounts->account_id = $companysettings->petty_cash_account_id;
+        $journalaccounts ->journal_id = $journal_id;
+        $journalaccounts ->dr_amount = $unreplenished[0]->unreplenished_expense;
+        $journalaccounts ->cr_amount = 0;
+        $journalaccounts->save();
+        $journalaccounts = new JournalAccounts();
+        $journalaccounts->account_id = $request->input('account_id_credit');
+        $journalaccounts ->journal_id = $journal_id;
+        $journalaccounts ->dr_amount = 0;
+        $journalaccounts ->cr_amount = $unreplenished[0]->unreplenished_expense;
+        $journalaccounts->save();
+
+        return ( new Reference( $transaction ) )
+            ->response()
+            ->setStatusCode(200);
+
     }
 
     public function GetPettyCashList($id=null,$as_of_date=null,$department_id=null) // List only, without on hand
