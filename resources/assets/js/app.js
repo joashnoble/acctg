@@ -61,6 +61,7 @@ const axiosConfig = {
 Vue.component('icon', Icon)
 Vue.component('App', require('./App.vue'))
 Vue.component('select2', require('./select2/Sele\ct2'))
+Vue.component('typeahead', require('./typeahead/typeahead'))
 Vue.component('vue-autonumeric', require('vue-autonumeric'))
 window.$ = window.jQuery = require('jquery')
 Vue.use(BootstrapVue)
