@@ -10,7 +10,7 @@
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
         "mpdf/mpdf": "^8.0",
-        "mrholek/CoreUI-Free-Bootstrap-Admin-Template": "dev-24d9a64",
+        "mrholek/coreui-free-bootstrap-admin-template": "dev-24d9a64",
         "phpoffice/phpspreadsheet": "^1.6",
         "tymon/jwt-auth": "dev-develop"
     },
